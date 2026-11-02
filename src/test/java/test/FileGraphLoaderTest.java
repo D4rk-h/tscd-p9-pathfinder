@@ -9,6 +9,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -30,7 +31,7 @@ public class FileGraphLoaderTest {
 	void testInvalidLinesAreReportedAndSkipped() throws IOException {
 		PrintStream original = System.err;
 		ByteArrayOutputStream captured = new ByteArrayOutputStream();
-		System.setErr(new PrintStream(captured));
+		System.setErr(new PrintStream(captured, true, StandardCharsets.UTF_8));
 		try {
 			GraphContainer container = new FileGraphLoader(write("A,B", "A,B,x", "A,B,2")).load();
 			assertEquals(2.0, container.pathWeightBetween("A", "B"));
@@ -38,9 +39,9 @@ public class FileGraphLoaderTest {
 		finally {
 			System.setErr(original);
 		}
-		String output = captured.toString();
-		assertTrue(output.contains("Invalid line at 0"));
-		assertTrue(output.contains("Invalid line at 1"));
+		String output = captured.toString(StandardCharsets.UTF_8);
+		assertTrue(output.contains("Invalid line at 0"), "stderr was: " + output);
+		assertTrue(output.contains("Invalid line at 1"), "stderr was: " + output);
 	}
 
 	@Test
