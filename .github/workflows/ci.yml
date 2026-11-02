@@ -70,7 +70,8 @@ jobs:
           path: target/site/jacoco/
       - name: Aviso en pull request
         if: github.event_name == 'pull_request'
-        run: echo "Pull request: el JAR no se publica, solo se valida." >> $GITHUB_STEP_SUMMARY
+        run: |
+          echo "Pull request: el JAR no se publica, solo se valida." >> $GITHUB_STEP_SUMMARY
 
   coverage-check:
     runs-on: ubuntu-22.04
